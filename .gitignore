@@ -1,0 +1,16 @@
+# Archivos de sistema
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Entornos virtuales
+venv/
+env/
+*.env
+
+# Carpeta de archivos generados por IDEs
+.idea/
+
+# Archivos de configuración local
+*.local
