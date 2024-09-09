@@ -39,7 +39,7 @@ void frame1(ScreenDisplay *display, DisplayUiState *state, int16_t x, int16_t y)
   display->setTextAlignment(TEXT_ALIGN_LEFT);
   display->setFont(ArialMT_Plain_10);
   display->drawStringMaxWidth(0 + x, 10 + y, 128, "Sistema Iniciado");
-  display->drawStringMaxWidth(0 + x, y, 128, "Moderador #1");
+  display->drawStringMaxWidth(0 + x, y, 128, "Moderador #2");
 }
 
 void frame2(ScreenDisplay *display, DisplayUiState *state, int16_t x, int16_t y) {
