@@ -63,11 +63,17 @@ void sendPacket() {
 unsigned long rx_millis = 0;
 void onReceive(uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr) {
   if (strncmp((char *)payload, "START", size) == 0) {
-    Serial.println("Señal de inicio recibida.");
-    estado = "Señal Recibida";
+      Serial.println("Señal de inicio recibida.");
+    if (rssi >= -100) {
+      Serial.println("Señal Optima");
+      estado = "Señal Recibida";
 
-    rx_millis = millis();
-    chanel_free = true;
+      rx_millis = millis();
+      chanel_free = true;
+    } else {
+      Serial.println("Señal NO Optima");
+      estado = "Señal baja para transmitir";
+    }
 
   } else {
     Serial.print("Paquete no reconocido: ");
