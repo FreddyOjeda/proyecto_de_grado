@@ -4,55 +4,61 @@
 #include "HT_SSD1306Wire.h" 
 #include "images.h"
 
+// Configuración del display según el modelo
 #ifdef WIRELESS_STICK_V3
-static SSD1306Wire  display(0x3c, 500000, SDA_OLED, SCL_OLED, GEOMETRY_64_32, RST_OLED); // addr , freq , i2c group , resolution , rst
+static SSD1306Wire display(0x3c, 500000, SDA_OLED, SCL_OLED, GEOMETRY_64_32, RST_OLED);
 #else
-static SSD1306Wire  display(0x3c, 500000, SDA_OLED, SCL_OLED, GEOMETRY_128_64, RST_OLED); // addr , freq , i2c group , resolution , rst
+static SSD1306Wire display(0x3c, 500000, SDA_OLED, SCL_OLED, GEOMETRY_128_64, RST_OLED);
 #endif
 
-DisplayUi ui( &display );
+// Inicializa la interfaz de usuario
+DisplayUi ui(&display);
 
-void frame1(ScreenDisplay *display, DisplayUiState* state, int16_t x, int16_t y){
+// === Funciones de cada "frame" para mostrar en pantalla ===
+
+// Frame 1: mensaje de bienvenida
+void frame1(ScreenDisplay* display, DisplayUiState* state, int16_t x, int16_t y) {
   display->setTextAlignment(TEXT_ALIGN_LEFT);
   display->setFont(ArialMT_Plain_10);
-  display->drawStringMaxWidth(0 + x, 10 + y, 128, "¡¡¡Hola...");
+  display->drawStringMaxWidth(x, y + 10, 128, "¡¡¡Hola...");
 }
-void frame2(ScreenDisplay *display, DisplayUiState* state, int16_t x, int16_t y){
+
+// Frame 2: segundo mensaje
+void frame2(ScreenDisplay* display, DisplayUiState* state, int16_t x, int16_t y) {
   display->setTextAlignment(TEXT_ALIGN_LEFT);
   display->setFont(ArialMT_Plain_10);
-  display->drawStringMaxWidth(0 + x, 10 + y, 128, "¡¡¡Mundo...");
+  display->drawStringMaxWidth(x, y + 10, 128, "¡¡¡Mundo...");
 }
-void frame3(ScreenDisplay *display, DisplayUiState* state, int16_t x, int16_t y){
+
+// Frame 3: imagen en pantalla
+void frame3(ScreenDisplay* display, DisplayUiState* state, int16_t x, int16_t y) {
   display->drawXbm(x, y, img_width, img_height, img_bits);
 }
 
-FrameCallback frames[] = {frame1, frame2, frame3};
-int framesCant = 3;
+// Arreglo de frames y cantidad
+FrameCallback frames[] = { frame1, frame2, frame3 };
+const int frameCount = sizeof(frames) / sizeof(frames[0]);
 
+// === Setup principal ===
 void setup() {
-  Serial.begin(115566);
-  Serial.println();
-  Serial.println();
+  Serial.begin(115200);  // Velocidad de baud estándar y suficiente
   delay(100);
 
-  ui.setTargetFPS(60);
-  ui.setIndicatorPosition(BOTTOM);
-
-  ui.setIndicatorDirection(LEFT_RIGHT);
-
-  ui.setFrameAnimation(SLIDE_UP);
-
-  ui.setFrames(frames, framesCant);
-  ui.init();
+  // Configuración de la UI
+  ui.setTargetFPS(60);                     // Fotogramas por segundo
+  ui.setIndicatorPosition(BOTTOM);        // Indicador en la parte inferior
+  ui.setIndicatorDirection(LEFT_RIGHT);   // Dirección de desplazamiento
+  ui.setFrameAnimation(SLIDE_UP);         // Tipo de animación entre frames
+  ui.setFrames(frames, frameCount);       // Asigna los frames definidos
+  ui.init();                              // Inicializa la UI
 }
 
+// === Loop principal ===
 void loop() {
-  int remainingTimeBudget = ui.update();
+  int remainingTimeBudget = ui.update(); // Actualiza la interfaz
 
+  // Si hay tiempo restante, se puede usar para otras tareas
   if (remainingTimeBudget > 0) {
-    // You can do some work here
-    // Don't do stuff if you are below your
-    // time budget.
     delay(remainingTimeBudget);
   }
 }
